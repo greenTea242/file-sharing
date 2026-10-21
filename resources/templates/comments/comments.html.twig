@@ -1,0 +1,117 @@
+{% import "comments/macros.html.twig" as macros %}
+<div class="row">
+	<div class="col-md-8">
+		<h2 class="mb-3">Комментарии
+			<span class="badge bg-secondary">{{ file.commentTree.countNodes() }}</span>
+		</h2>
+		<div class="card mb-3">
+			<div class="card-body">
+				<h5 class="card-title">Оставить комментарий</h5>
+				<form class="needs-validation" method="post" action="{{ url_for('comments.add') }}" id="comment-form">
+					<input type="hidden" name="{{ commentForm.csrfToken.nameKey }}" value="{{ commentForm.csrfToken.name }}">
+					<input type="hidden" name="{{ commentForm.csrfToken.valueKey }}" value="{{ commentForm.csrfToken.value}}">
+					<input type="hidden" name="uploadedFileId" value="{{ commentForm.uploadedFileId }}">
+					<input type="hidden" name="parentId" value="{{ commentForm.parentId}}">
+					<div class="mb-3">
+						<label for="comment-author-name" class="form-label">Ваше имя</label>
+						{% set userNameMaxLen = constant('MAX_AUTHOR_NAME_LEN', commentFormValidator) %}
+						<input type="text" class="form-control" name="userName" id="comment-author-name" placeholder="Введите имя" maxlength={{ userNameMaxLen }}>
+						{% if errors.userName is defined %}
+							<div class="invalid-feedback">
+								{% for error in errors.userName %}
+									<div>{{ error }}</div>
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
+					<div class="mb-3">
+						<label for="comment-text" class="form-label">Комментарий</label>
+						{% set textMaxLen = constant('MAX_TEXT_LEN', commentFormValidator) %}
+						<textarea class="form-control" id="comment-text" rows="3" placeholder="Напишите комментарий..." name="text" maxlength={{ textMaxLen }}></textarea>
+						{% if errors.text is defined %}
+							<div class="invalid-feedback">
+								{% for error in errors.text %}
+									<div>{{ error }}</div>
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
+					{% if error.commentsCount is defined %} 
+						<div class="mb-3">
+							<div class="invalid-feedback">								
+								{% for error in errors.commentsCount %}
+									<div>{{ error }}</div>
+								{% endfor %}						
+							</div>
+						</div>
+					{% endif %}
+					{% if errors.uploadedFileId is defined or
+						  errors.parentId is defined %}
+						<div class="mb-3">
+							<div class="invalid-feedback">								
+								{{ commentFormValidator.getDefaultError() }}								
+							</div>
+						</div>
+					{% endif %}
+					<button type="submit" class="btn btn-primary">Отправить</button>
+				</form>
+			</div>
+		</div>
+		<div class="card mt-3 d-none" id="comment-reply">
+			<div class="card-body">
+				<h5 class="card-title">Оставить комментарий</h5>
+				<form class="needs-validation" method="post" action="{{ url_for('comments.add') }}" id="comment-reply-form">
+					<input type="hidden" name="{{ commentForm.csrfToken.nameKey }}" value="{{ commentForm.csrfToken.name }}">
+					<input type="hidden" name="{{ commentForm.csrfToken.valueKey }}" value="{{ commentForm.csrfToken.value}}">
+					<input type="hidden" name="uploadedFileId" value="{{ commentForm.uploadedFileId }}">
+					<input type="hidden" name="parentId" value="{{ commentForm.parentId}}">
+					<div class="mb-3">
+						<label for="comment-author-name" class="form-label">Ваше имя</label>
+						{% set userNameMaxLen = constant('MAX_AUTHOR_NAME_LEN', commentFormValidator) %}
+						<input type="text" class="form-control" name="userName" id="comment-reply-author-name" placeholder="Введите имя" maxlength={{ userNameMaxLen }}>
+						{% if errors.userName is defined %}
+							<div class="invalid-feedback">
+								{% for error in errors.userName %}
+									<div>{{ error }}</div>
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
+					<div class="mb-3">
+						<label for="comment-text" class="form-label">Комментарий</label>
+						{% set textMaxLen = constant('MAX_TEXT_LEN', commentFormValidator) %}
+						<textarea class="form-control" id="comment-reply-text" rows="3" placeholder="Напишите комментарий..." name="text" maxlength={{ textMaxLen }}></textarea>
+						{% if errors.text is defined %}
+							<div class="invalid-feedback">
+								{% for error in errors.text %}
+									<div>{{ error }}</div>
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
+					{% if error.commentsCount is defined %} 
+						<div class="mb-3">
+							<div class="invalid-feedback">								
+								{% for error in errors.commentsCount %}
+									<div>{{ error }}</div>
+								{% endfor %}						
+							</div>
+						</div>
+					{% endif %}
+					{% if errors.uploadedFileId is defined or
+						  errors.parentId is defined %}
+						<div class="mb-3">
+							<div class="invalid-feedback">								
+								{{ commentFormValidator.getDefaultError() }}								
+							</div>
+						</div>
+					{% endif %}
+					<button type="submit" class="btn btn-primary">Отправить</button>
+				</form>
+			</div>
+		</div>		
+		{% if file.commentTree is not null %}
+			{{ macros.render_comment_tree(file.commentTree) }}
+		{% endif %}
+	</div>
+</div>

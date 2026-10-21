@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block title %}Ошибка
+	{{ statusCode }}
+{% endblock %}
+{% block body %}
+	<div class="container my-3">
+		<h2 class="mb-3">Ошибка {{ statusCode }}</h2>
+		<p class="mb-3">{{ message }}</p>
+		{% if errorDetails %}
+			<hr>
+			<h3 class="mb-3">Отладка:</h3>
+			<p class="mb-3">Message: {{ errorDetails.getMessage() }}</p>
+			<pre class="mb-3">{{ errorDetails.getTraceAsString() }}</pre>
+		{% endif %}
+	</div>
+{% endblock %}

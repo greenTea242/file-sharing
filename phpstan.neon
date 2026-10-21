@@ -1,0 +1,13 @@
+parameters:
+    level: 6
+    paths:        
+        - public/
+        - scripts/
+        - src/
+        - resources/templates
+        - bin/
+    excludePaths:
+        - resources/templates/cache
+    ignoreErrors:
+        - '#Call to an undefined method Predis\\Client::zAdd\(\)#'
+        - '#Call to an undefined method Predis\\Client::lPush\(\)#'

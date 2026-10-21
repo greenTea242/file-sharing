@@ -1,0 +1,54 @@
+{% macro render_comment_node(commentNode) %}
+	{% set depth = commentNode.comment.getDepth() %}
+	<li class="comment-item {% if depth ==  1 %}depth-1{% elseif depth == 2 %}depth-2{% else %}depth-3{% endif %}">
+		<div class="comment-content">
+			<div class="d-flex">
+				<div class="comment-id d-none">{{ commentNode.comment.getId()}}</div>
+				<div class="avatar">{{ commentNode.comment.getUserInitials() }}</div>
+				<div class="flex-grow-1">
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<h6 class="mb-0">{{ commentNode.comment.userName ? commentNode.comment.userName : 'Аноним' }}
+							<small class="text-muted">{{ commentNode.comment.getFakeUserName()}}</small>
+						</h6>
+						<span class="comment-meta">
+							<i class="bi bi-clock"></i>
+							{{ commentNode.comment.formatCreatedAt() }}
+						</span>
+					</div>
+					<p class="mb-2">{{ commentNode.comment.text }}</p>
+					<div class="comment-actions">
+						<button class="btn btn-sm btn-link text-primary me-3 p-0">
+							<i class="bi bi-hand-thumbs-up"></i>
+							5
+						</button>
+						<button class="btn btn-sm btn-link text-secondary p-0 btn-reply">
+							<i class="bi bi-reply"></i>
+							Ответить
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% if commentNode.childNodes|length > 0 %}
+			{% if depth <= 3 %}
+				<ul class="comment-children">
+					{% for childNode in commentNode.childNodes %}
+						{{ _self.render_comment_node(childNode) }}
+					{% endfor %}
+				</ul>
+			{% else %}
+				{% for childNode in commentNode.childNodes %}
+					{{ _self.render_comment_node(childNode) }}
+				{% endfor %}
+			{% endif %}
+		{% endif %}
+	</li>
+{% endmacro %}
+
+{% macro render_comment_tree(commentTree) %}
+	<ul class="comment-tree">
+		{% for rootNode in commentTree.rootNodes %}
+			{{ _self.render_comment_node(rootNode) }}
+		{% endfor %}
+	</ul>
+{% endmacro %}

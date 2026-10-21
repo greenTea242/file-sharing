@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+{% block title %}Файл
+{% endblock %}
+{% block body %}
+	<div class="container my-3">
+		{% if file is null %}
+			<div class="row">
+				<div class="col-12 col-md-6">
+					<p class="mb-3">Файл не существует</p>
+				</div>
+			</div>
+		{% else %}
+			{% if is_image(file) %}
+				<div class="row">
+					<div class="col-12 col-md-6">
+						{% if fileSpecificData.thumbnail %}
+							<div class="mb-3">
+								<img src="{{ file.getUrl() }}" alt="загруженное изображение" class="img-thumbnail" width="{{ fileSpecificData.thumbnail.imageInfo.getWidth() }}" height="{{ fileSpecificData.thumbnail.imageInfo.getHeight() }}">
+							</div>
+						{% else %}
+							<p class="mb-3">Миниатюра еще не готова, подождите</p>
+						{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			{% if is_audio(file) %}
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="mb-3">
+							<audio id="player" controls>
+								<source src="{{ file.getUrl() }}" type="{{ file.mediaInfo.getMimeType()}}"/>
+							</audio>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+			{% if is_video(file) %}
+				<div class="row">
+					<div class="col-12 col-md-6">
+						{% if fileSpecificData.videoPreview %}
+							<div class="mb-3">
+								<video id="player" playsinline controls {% if fileSpecificData.thumbnail %} data-poster="{{ fileSpecificData.thumbnail.getUrl() }}" {% endif %}>
+									<source src="{{ fileSpecificData.videoPreview.getUrl()}}" type="{{ file.mediaInfo.getMimeType()}}"/>
+								</video>
+							</div>
+						{% else %}
+							<p class="mb-3">Видео-превью еще не готово, подождите</p>
+						{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			<div class="row">
+				<div class="col-12 col-md-6">
+					<div class="card mb-3">
+						<div class="card-body">
+							<h5 class="card-title">Данные о файле</h5>
+							<table class="table table-striped table-bordered mb-3">
+								<thead>
+									<tr>
+										<th>Параметр</th>
+										<th>Значение</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Имя</td>
+										<td>{{ file.userFilename }}</td>
+									</tr>
+									<tr>
+										<td>Размер</td>
+										<td>{{ file.mediaInfo.getSize()|format_file_size}}</td>
+									</tr>
+									<tr>
+										<td>Дата</td>
+										<td>{{ file.createdAt|date("d.m.Y H:i:s") }}</td>
+									</tr>
+									<tr>
+										<td>Комментарий автора</td>
+										<td>{{ file.userComment ?: '–' }}</td>
+									</tr>
+									{% if is_image(file) %}
+										<tr>
+											<td>Ширина</td>
+											<td>{{ fileSpecificData.thumbnail.imageInfo.getWidth() }}
+												px</td>
+										</tr>
+										<tr>
+											<td>Высота</td>
+											<td>{{ fileSpecificData.thumbnail.imageInfo.getHeight() }}
+												px</td>
+										</tr>
+									{% endif %}
+									{% if is_video(file) and
+								  fileSpecificData.videoPreview %}
+										<tr>
+											<td>Длительность</td>
+											<td>{{ fileSpecificData.videoPreview.videoInfo.getPlaytime() }}</td>
+										</tr>
+									{% endif %}
+									{% if is_audio(file) %}
+										<tr>
+											<td>Длительность</td>
+											<td>{{ fileSpecificData.playtime }}</td>
+										</tr>
+									{% endif %}
+								</tbody>
+							</table>
+							<div>
+								<a href="{{ file.getUrl() }}" class="btn btn-primary">Скачать</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% include "comments/comments.html.twig" %}
+		{% endif %}
+	</div>
+{% endblock %}

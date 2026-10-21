@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<div class="container my-3">
+		<div class="row">
+			<div class="col-8">
+				{% if files is empty %}
+					<div class="mb-3">Нет файлов</div>
+				{% else %}
+					<table class="table table-striped table-bordered mb-3">
+						<thead>
+							<tr>
+								<th>Имя</th>
+								<th>Размер</th>
+								<th>Дата</th>
+								<th>Ссылка на скачивание</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for file in files %}
+								<tr>
+									<td>
+										<a class="link-primary" href="{{ url_for('files.show', {'id': file.id}) }}">{{ file.userFilename }}</a>
+									</td>
+									<td>{{ file.mediaInfo.getSize()|format_file_size }}</td>
+									<td>{{ file.createdAt|date("d.m.Y H:i:s") }}</td>
+									<td>
+										<a class="link-primary" href="{{ url_for('files.download', {'id': file.id}) }}">Скачать</a>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				{% endif %}
+				{% if pagination.getTotalPages() > 0 %}
+					<nav class="mb-3">
+						<ul class="pagination">
+							{% if pagination.previousPage is not null %}
+								<li class="page-item">
+									<a class="page-link" href="{{ linkGenerator.getLinkForPage( pagination.previousPage )}}">Предыдущая</a>
+								</li>
+							{% endif %}
+							{% set totalPagesRange = pagination.getTotalPagesRange() %}
+							{% if totalPagesRange|length > 0 %}
+								{% for page in totalPagesRange %}
+									<li class="page-item">
+										<a class="page-link {{ page == pagination.currentPage ? 'active' : '' }}" href="{{ linkGenerator.getLinkForPage( page ) }}">{{ page }}</a>
+									</li>
+								{% endfor %}
+							{% endif %}
+							{% if pagination.nextPage is not null %}
+								<li class="page-item">
+									<a class="page-link" href="{{ linkGenerator.getLinkForPage( pagination.nextPage )}}">Следующая</a>
+								</li>
+							{% endif %}
+						</ul>
+					</nav>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

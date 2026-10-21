@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block title %}Загрузка файла
+{% endblock %}
+{% block body %}
+	<div class="container my-3">
+		<div class="row">
+			<div class="col-12 col-md-6">
+				<form class="needs-validation" method="post" action="{{ url_for('files.upload') }}" enctype="multipart/form-data">
+					<input type="hidden" name="{{ fileUploadForm.csrfToken.nameKey }}" value="{{ fileUploadForm.csrfToken.name }}">
+					<input type="hidden" name="{{ fileUploadForm.csrfToken.valueKey }}" value="{{ fileUploadForm.csrfToken.value}}">
+					{% set fileMaxSize = fileUploadFormValidator.fileValidator.getMaxSize() %}
+					
+					<div class="mb-3">
+						<label for="form-file" class="form-label">Выберите файл. Максимальный размер
+							{{ fileMaxSize|format_file_size }}.</label>
+						<input type="hidden" name="MAX_FILE_SIZE" value="{{ fileMaxSize }}">
+						<input class="form-control {{ errors.file is defined ? 'is-invalid' : '' }}" type="file" id="form-file" name="file" required>
+						{% if errors.file is defined %}
+							<div class="invalid-feedback">
+								{% for error in errors.file %}
+									<div>{{ error }}</div>
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
+					
+					<div class="mb-3">
+						<label for="form-user-comment" class="form-label">Комментарий</label>
+						{% set commentMaxLen = constant('USER_COMMENT_MAX_LEN', fileUploadFormValidator) %}
+						<textarea class="form-control {{ errors.userComment is defined  ? 'is-invalid' : '' }}" id="form-user-comment" rows="3" name="userComment" maxlength="{{ commentMaxLen }}" placeholder="Ваш комментарий. Длина до {{ commentMaxLen}} символов.">{{ fileUploadForm.userComment }}</textarea>
+						{% if errors.userComment is defined %}
+							<div class="invalid-feedback">
+								{% for error in errors.userComment %}
+									<div>{{ error }}</div>
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
+					
+					<button type="submit" class="btn btn-primary mb-3">Отправить</button>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
