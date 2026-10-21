@@ -34,7 +34,7 @@ Implemented via:
 1. `git clone https://github.com/greentea242/file-sharing.git`
 1. `cd file-sharing`
 1. `composer install`
-1. Configure the database connection, Redis settings, and file download method in `/app/settings.php`
+1. Configure the database connection, Redis settings, and file download method in `app/settings.php`
 1. Set up the web server to serve the `public` directory
 1. `npm install`
 1. `npm run build`
