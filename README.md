@@ -19,6 +19,8 @@ Implemented via:
 * GIF preview generation from videos
 * Comments under files
 * Background processing of media files
+* Video conversion to MP4
+* Video playback using an integrated media player
 
 ## Requirements
 * PHP 8.4 or above
